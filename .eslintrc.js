@@ -3,10 +3,10 @@
 module.exports = {
   root: true,
   parserOptions: {
-    parser: 'babel-eslint'
+    'parser': 'babel-eslint'
   },
   env: {
-    browser: true
+    'browser': true
   },
   extends: [
     // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
@@ -22,10 +22,10 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 'off',
     // allow debugger during development
-    semi: ['error', 'always'], //分好不报错
-    // quotes: ['error', 'double'], //单引号改成双引号
+    'semi': ['error', 'always'], //加分号不报错
+    // 'quotes': ['error', 'double'], //单引号改成双引号
     'eol-last': 0,
     'space-before-function-paren': 0,
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   }
-}
+};
