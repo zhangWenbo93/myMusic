@@ -1,15 +1,20 @@
 <template>
-  <div id="app">
-    <router-view/>
-  </div>
+<div id="app">
+  <Mheader></Mheader>
+</div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
+import Mheader from 'components/m-header/m-header';
 export default {
-  name: 'App'
+  components: {
+    Mheader
+  }
 };
 </script>
 
-<style>
-
+<style rel="stylesheet/stylus" lang="stylus">
+@import '~common/stylus/variable'
+#app
+  color $color-theme
 </style>

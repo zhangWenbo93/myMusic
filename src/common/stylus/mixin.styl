@@ -1,0 +1,19 @@
+bg-image($url)//背景图
+  background-image: url($url+'@2x.png')
+  @media (-webkit-min-device-pixel-ratio:3),(min-device-pixel-ratio:3)
+    background-image: url($url+'@3x.png')
+
+no-wrap()//文字不折行
+  text-overflow: ellipsis
+  overflow: hidden
+  will-change: nowrap
+
+extend-click()//扩展小图标点击区域
+  position: relative
+  &:before
+    content: ''
+    position: absolute
+    top: -10px
+    left: -10px
+    right: -10px
+    bottom: -10px

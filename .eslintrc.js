@@ -24,8 +24,8 @@ module.exports = {
     // allow debugger during development
     'semi': ['error', 'always'], //加分号不报错
     // 'quotes': ['error', 'double'], //单引号改成双引号
-    'eol-last': 0,
-    'space-before-function-paren': 0,
+    'eol-last': 0,// 不检测新文件末尾是否存在空行
+    'space-before-function-paren': 0,// 是否在函数左括号前加空格
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   }
 };
