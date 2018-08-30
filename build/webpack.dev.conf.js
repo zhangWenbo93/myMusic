@@ -9,6 +9,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const portfinder = require('portfinder');
+const axios = require('axios');
+const bodyParser = require('body-parser');
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT && Number(process.env.PORT);
@@ -25,15 +27,26 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
-    clientLogLevel: 'warning',
-    historyApiFallback: {
-      rewrites: [
-        {
-          from: /.*/,
-          to: path.posix.join(config.dev.assetsPublicPath, 'index.html')
-        }
-      ]
+    before(app) {
+      app.use(bodyParser.urlencoded({ extended: true }));
+      const querystring = require('querystring');
+
+      app.get('/api/getDiscList', function (req, res) {
+        const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg';
+        axios.get(url, {
+          headers: {
+            referer: 'https://c.y.qq.com/', // 告知服务器请求的原始资源的URL，其用于所有类型的请求，并且包括：协议+域名+查询参数（注意，不包含锚点信息）。
+            host: 'c.y.qq.com' // 描述请求将被发送的目的地，包括，且仅仅包括域名和端口号。在任何类型请求中，request都会包含此header信息。
+          },
+          params: req.query
+        }).then((response) => {
+          res.json(response.data);
+        }).catch((e) => {
+          console.log(e);
+        })
+      })
     },
+    historyApiFallback: true,
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
     compress: true,

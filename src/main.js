@@ -4,13 +4,16 @@ import App from './App';
 import router from './router';
 import 'common/stylus/index.styl';
 import fastclick from 'fastclick';
+import VueLazyload from 'vue-lazyload';
 
 Vue.config.productionTip = false;
 
 fastclick.attach(document.body);
-// 在js里面，new 一个对象，需要赋值给某个值（变量），用Vue实例化的时候，不需要赋值给值（变量），所以要单独给配一条规则，给new Vue这行代码上面加这个注释，把这行代码规则的校验跳过，通过eslint-disable。
+// 在js里面， new 一个对象，需要赋值给某个值（变量），用Vue实例化的时候，不需要赋值给值（变量），所以要单独给配一条规则，给new Vue这行代码上面加这个注释，把这行代码规则的校验跳过，通过eslint-disable。
 /* eslint-disable no-new */
-
+Vue.use(VueLazyload, {
+  loading: require('common/image/default.png')
+});
 new Vue({
   el: '#app',
   router,
