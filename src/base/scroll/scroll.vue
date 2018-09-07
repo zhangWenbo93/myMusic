@@ -20,6 +20,10 @@ export default {
     data: {
       type: Array,
       default: null
+    },
+    listenScroll: { // 用于scroll是否监听滚动事件，默认false，
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -41,6 +45,12 @@ export default {
         probeType: this.probeType,
         click: this.click
       });
+      if (this.listenScroll) {
+        let me = this; // 从新定义this
+        this.scroll.on('scroll', (pos) => { // pos 获取位置
+          me.$emit('scroll', pos); // 在这里的this指向的是scroll 非vue实例  所以在外层保存vue实例的this指向
+        });
+      }
     },
     enable() {
       this.scroll && this.scroll.enable(); // 作用：启用 better-scroll, 默认 开启。
@@ -50,6 +60,12 @@ export default {
     },
     refresh() {
       this.scroll && this.scroll.refresh(); // 作用：重新计算 better-scroll，当 DOM 结构发生变化的时候务必要调用确保滚动的效果正常。
+    },
+    scrollTo() {
+      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
+    },
+    scrollToElement() {
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
     }
   },
   watch: { // 监听数据变化动态刷新scroll
