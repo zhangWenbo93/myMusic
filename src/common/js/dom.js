@@ -1,4 +1,4 @@
-export function addClass(el, className) {
+export function addClass(el, className) { // dom结构calss名添加
   if (hasClass(el, className)) {
     return;
   }
@@ -12,7 +12,7 @@ export function hasClass(el, className) {
   return reg.test(el.className);
 }
 
-export function getData(el, name, val) {
+export function getData(el, name, val) { // dom自定义属性添加
   const prefix = 'data-';
   name = prefix + name;
   if (val) {
@@ -21,3 +21,32 @@ export function getData(el, name, val) {
     return el.getAttribute(name, val);
   }
 }
+
+let elementStyle = document.createElement('div').style;
+
+let vendor = (() => { // 浏览器供应商前缀
+  let transformNames = {
+    webkit: 'webkitTransform',
+    Moz: 'MozTransform',
+    O: 'OTransform',
+    ms: 'msTransform',
+    standard: 'transform'
+  };
+  for (let key in transformNames) {
+    if (elementStyle[transformNames[key]] !== undefined) {
+      return key;
+    }
+  }
+  return false;
+})();
+
+export function prefixStyle(style) {
+  if (vendor === false) {
+    return false;
+  }
+  if (vendor === 'standard') {
+    return style;
+  }
+  return vendor + style.charAt(0).toUpperCase() + style.substr(1);
+}
+// style.charAt(0).toUpperCase()首字母大写 style.substr(1)拼接首字母除外的部分

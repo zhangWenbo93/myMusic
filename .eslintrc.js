@@ -26,6 +26,7 @@ module.exports = {
     // 'quotes': ['error', 'double'], //单引号改成双引号
     'eol-last': 0,// 不检测新文件末尾是否存在空行
     'space-before-function-paren': 0,// 是否在函数左括号前加空格
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-unused-vars': [0, {"vars": "all", "args": "after-used"}] // 能有声明后未被使用的变量或参数
   }
 };

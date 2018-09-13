@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 歌手组件 -->
 <template>
   <scroll class="listview"
     :data="data" ref="listview"
@@ -10,7 +10,7 @@
       <li v-for="(group,index) in data" :key="index" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li v-for="(item,index) in group.items" :key="index" class="list-group-item">
+          <li v-for="(item,index) in group.items" :key="index" class="list-group-item" @click="selectItem(item)">
             <img v-lazy="item.avatar" class="avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -81,6 +81,7 @@ export default {
   },
   methods: {
     onShortcutTouchStart(e) { // start滚动
+      console.log('111');
       let anchorIndex = getData(e.target, 'index');
       let firstTouch = e.touches[0];
       this.touch.y1 = firstTouch.pageY;
@@ -96,6 +97,9 @@ export default {
     },
     scroll(pos) { // 赋值联动左侧
       this.scrollY = pos.y;
+    },
+    selectItem(item) {
+      this.$emit('select', item);
     },
     _scrollTo(index) { // 滚动事件
       console.log('index', index);
