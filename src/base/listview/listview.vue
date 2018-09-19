@@ -80,8 +80,7 @@ export default {
     }
   },
   methods: {
-    onShortcutTouchStart(e) { // start滚动
-      console.log('111');
+    onShortcutTouchStart(e) { // start滚动preloadJS
       let anchorIndex = getData(e.target, 'index');
       let firstTouch = e.touches[0];
       this.touch.y1 = firstTouch.pageY;
@@ -102,12 +101,10 @@ export default {
       this.$emit('select', item);
     },
     _scrollTo(index) { // 滚动事件
-      console.log('index', index);
       // 这个是处理点击在非字母空区域时
       if (!index && index !== 0) {
         return;
       }
-      console.log('listHeight', this.listHeight.length);
       // 这个是处理TouchMove时 下标异常问题
       if (index < 0) { // 拖动到最上面
         index = 0;
