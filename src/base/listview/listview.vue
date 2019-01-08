@@ -100,6 +100,9 @@ export default {
     selectItem(item) {
       this.$emit('select', item);
     },
+    refresh() {
+      this.$refs.listview.refresh();
+    },
     _scrollTo(index) { // 滚动事件
       // 这个是处理点击在非字母空区域时
       if (!index && index !== 0) {

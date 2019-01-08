@@ -7,7 +7,7 @@
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="play-wrapper">
-        <div class="play" v-show="songs.length>0" ref="playbtn">
+        <div class="play" v-show="songs.length>0" ref="playbtn" @click="random">
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
         </div>
@@ -22,7 +22,7 @@
       :probe-type="probeType"
     >
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list :songs="songs" @select="selectItem"></song-list>
       </div>
       <div class="loading-container" v-show="!songs.length">
         <loading></loading>
@@ -36,12 +36,15 @@ import Scroll from 'base/scroll/scroll';
 import SongList from 'base/song-list/song-list';
 import {prefixStyle} from 'common/js/dom';
 import loading from 'base/loading/loading';
+import {mapActions} from 'vuex';
+import {playListMixin} from 'common/js/mixin';
 
 const RESERVED_HEIGHT = 40;
 const transform = prefixStyle('transform');
 const backrdop = prefixStyle('backrdop-filter');
 
 export default {
+  mixins: [playListMixin],
   props: {
     bgImage: {
       type: String,
@@ -97,12 +100,32 @@ export default {
     this.listenScroll = true; // scroll组件激活监听事件
   },
   methods: {
+    handlePlaylist(playlist) {
+      const bottom = playlist.length > 0 ? '60px' : '';
+      this.$refs.list.$el.style.bottom = bottom;
+      this.$refs.list.refresh();
+    },
     back() {
       this.$router.back();
     },
     scroll(pos) {
       this.scrollY = pos.y;
-    }
+    },
+    selectItem(item, index) {
+      this.selectPlay({
+        list: this.songs,
+        index
+      });
+    },
+    random() {
+      this.randomPlay({
+        list: this.songs
+      });
+    },
+    ...mapActions([
+      'selectPlay',
+      'randomPlay'
+    ])
   },
   computed: {
     bgStyle() {

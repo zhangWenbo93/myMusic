@@ -1,7 +1,7 @@
 <!-- 歌手 -->
 <template>
-  <div class="singer">
-    <list-view :data="singers" @select="selectSinger"></list-view>
+  <div class="singer" ref="singer">
+    <list-view :data="singers" @select="selectSinger" :refresh="refresh" ref="list"></list-view>
     <router-view></router-view>
   </div>
 </template>
@@ -12,10 +12,12 @@ import { ERR_OK } from 'api/config';
 import Singer from 'common/js/singer';
 import ListView from 'base/listview/listview';
 import { mapMutations } from 'vuex';
+import {playListMixin} from 'common/js/mixin';
 
 const HOT_TITLE = '热门';
 const HOT_SINGER_LEN = 10;
 export default {
+  mixins: [playListMixin],
   data () {
     return {
       singers: []
@@ -25,6 +27,11 @@ export default {
     this._getSingerList();
   },
   methods: {
+    handlePlaylist(playlist) {
+      const bottom = playlist.length > 0 ? '60px' : '';
+      this.$refs.singer.style.bottom = bottom;
+      this.$refs.list.refresh();
+    },
     selectSinger(singer) {
       this.$router.push({
         path: `/singer/${singer.id}`
