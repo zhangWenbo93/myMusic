@@ -7,6 +7,10 @@
 
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll';
+
+const DIRECTION_H = 'horizontal';
+const DIRECTION_V = 'vertical';
+
 export default {
   props: {
     probeType: {
@@ -25,6 +29,10 @@ export default {
       type: Boolean,
       default: false
     },
+    beforeScroll: {
+      type: Boolean,
+      default: false
+    },
     pullup: { // 是否上拉加载
       type: Boolean,
       default: false
@@ -36,47 +44,45 @@ export default {
     refreshDelay: {
       type: Number,
       default: 20
+    },
+    direction: {
+      type: String,
+      default: DIRECTION_V
     }
-  },
-  data() {
-    return {
-
-    };
   },
   mounted() {
     setTimeout(() => {
       this._initScroll();
-    });
+    }, 20);
   },
   methods: {
     _initScroll() {
       if (!this.$refs.wrapper) {
         return;
       }
-      let options = {
+      this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
         click: this.click,
-        pullDownRefresh: this.pulldown
-      };
-
-      this.scroll = new BScroll(this.$refs.wrapper, options);
+        eventPassthrough: this.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V
+      });
 
       if (this.listenScroll) {
-        let me = this; // 从新定义this
-        this.scroll.on('scroll', (pos) => { // pos 获取位置
-          me.$emit('scroll', pos); // 在这里的this指向的是scroll 非vue实例  所以在外层保存vue实例的this指向
+        this.scroll.on('scroll', (pos) => {
+          this.$emit('scroll', pos);
         });
       }
-      if (this.pulldown) {
-        this.scroll.on('pullingDown', () => {
-          this.$emit('pullingDown');
-        });
-      }
+
       if (this.pullup) {
         this.scroll.on('scrollEnd', () => { // scrollEnd表示scroll停止
           if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
             this.$emit('scrollToEnd'); // scrollToEnd滚动到底部
           }
+        });
+      }
+
+      if (this.beforeScroll) {
+        this.scroll.on('beforeScrollStart', () => { // 解决移动端键盘弹起input问题
+          this.$emit('beforeScroll');
         });
       }
     },
@@ -106,6 +112,4 @@ export default {
 };
 </script>
 
-<style rel="stylesheet/stylus" lang="stylus">
-
-</style>
+<style rel="stylesheet/stylus" lang="stylus"></style>
