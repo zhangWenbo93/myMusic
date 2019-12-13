@@ -9,7 +9,7 @@
 import MusicList from 'components/music-list/music-list';
 import { mapGetters } from 'vuex';
 import { getSingerDetail } from 'api/singer';
-// import { ERR_OK } from 'api/config';
+import { ERR_OK } from 'api/config';
 import { createSong, isValidMusic, processSongsUrl } from 'common/js/song';
 
 export default {
@@ -39,16 +39,18 @@ export default {
         return;
       }
       getSingerDetail(this.singer.id).then((res) => {
-        processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
-          this.songs = songs;
-        });
+        if (res.code === ERR_OK) {
+          processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
+            this.songs = songs;
+          });
+        }
       });
     },
     _normalizeSongs(list) {
       let ret = [];
       list.forEach(item => {
         let {musicData} = item;
-        if (musicData.songid && musicData.albummid) {
+        if (isValidMusic(musicData)) {
           ret.push(createSong(musicData));
         }
       });

@@ -24,6 +24,18 @@ export default {
     listenScroll: { // 用于scroll是否监听滚动事件，默认false，
       type: Boolean,
       default: false
+    },
+    pullup: { // 是否上拉加载
+      type: Boolean,
+      default: false
+    },
+    pulldown: {
+      type: Boolean,
+      default: false
+    },
+    refreshDelay: {
+      type: Number,
+      default: 20
     }
   },
   data() {
@@ -41,14 +53,30 @@ export default {
       if (!this.$refs.wrapper) {
         return;
       }
-      this.scroll = new BScroll(this.$refs.wrapper, {
+      let options = {
         probeType: this.probeType,
-        click: this.click
-      });
+        click: this.click,
+        pullDownRefresh: this.pulldown
+      };
+
+      this.scroll = new BScroll(this.$refs.wrapper, options);
+
       if (this.listenScroll) {
         let me = this; // 从新定义this
         this.scroll.on('scroll', (pos) => { // pos 获取位置
           me.$emit('scroll', pos); // 在这里的this指向的是scroll 非vue实例  所以在外层保存vue实例的this指向
+        });
+      }
+      if (this.pulldown) {
+        this.scroll.on('pullingDown', () => {
+          this.$emit('pullingDown');
+        });
+      }
+      if (this.pullup) {
+        this.scroll.on('scrollEnd', () => { // scrollEnd表示scroll停止
+          if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+            this.$emit('scrollToEnd'); // scrollToEnd滚动到底部
+          }
         });
       }
     },
@@ -72,7 +100,7 @@ export default {
     data() {
       setTimeout(() => {
         this.refresh();
-      }, 20);
+      }, this.refreshDelay);
     }
   }
 };

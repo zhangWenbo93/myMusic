@@ -19,11 +19,14 @@ export default {
 
 <style rel="stylesheet/stylus" lang="stylus" scoped>
   @import "~common/stylus/variable";
+
   .loading
     width 100%
-    text-align center
+    display flex
+    flex-direction inherit
+    align-items center
+    justify-content center
     .desc
       font-size $font-size-small
-      line-height 20px
       color $color-text-l
 </style>

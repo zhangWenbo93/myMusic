@@ -1,7 +1,7 @@
 <!-- 歌手 -->
 <template>
   <div class="singer" ref="singer">
-    <list-view :data="singers" @select="selectSinger" :refresh="refresh" ref="list"></list-view>
+    <list-view :data="singers" @select="selectSinger" ref="list"></list-view>
     <router-view></router-view>
   </div>
 </template>
