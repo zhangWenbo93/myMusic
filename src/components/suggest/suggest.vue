@@ -65,9 +65,6 @@ export default {
     };
   },
   methods: {
-    refresh() {
-      this.$refs.suggest.refresh();
-    },
     search() {
       this.page = 1;
       this.hasMore = true;
@@ -126,6 +123,9 @@ export default {
         this.insertSong(item);
       }
       this.$emit('select'); // 不许在suggest中写保存歌曲历史的逻辑，suggest处理的仅仅是歌手或者当前选中歌曲的信息
+    },
+    refresh() {
+      this.$refs.suggest.refresh();
     },
     _checkMore(data) {
       const song = data.song;

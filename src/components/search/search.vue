@@ -4,52 +4,95 @@
     <div class="search-box-wrapper">
       <search-box ref="searchBox" @query="onQueryChange"></search-box>
     </div>
-    <div class="shortcut-wrapper" v-show="!query">
-      <div class="shortcut">
-        <div class="hot-key">
-          <h1 class="title">热门搜索</h1>
-          <ul>
-            <li
-              v-for="(item, index) in hotkey"
-              :key="index"
-              class="item"
-              @click="addQuery(item.k)"
-            >
-              {{ item.k }}
-            </li>
-          </ul>
+    <div class="shortcut-wrapper" v-show="!query" ref="shortcutWrapper">
+      <scroll class="shortcut" :data="shortcutData" ref="shortcut">
+        <div>
+          <div class="hot-key">
+            <h1 class="title">热门搜索</h1>
+            <ul>
+              <li
+                v-for="(item, index) in hotkey"
+                :key="index"
+                class="item"
+                @click="addQuery(item.k)"
+              >
+                {{ item.k }}
+              </li>
+            </ul>
+          </div>
+          <div class="search-history" v-show="searchHistory.length">
+            <h1 class="title">
+              <span class="text">搜索历史</span>
+              <span class="clear" @click="showConfirm">
+                <i class="icon-clear"></i>
+              </span>
+            </h1>
+            <search-list
+              :searches="searchHistory"
+              @select="addQuery"
+              @delete="deleteSearchHistory"
+            />
+            <!-- addQuery参数是在执行这个函数的时候传入的，在模板中不写的话就是事件默认派发的参数，自定义事件的话默认派发的就是 $emit 传入的参数。 -->
+          </div>
         </div>
-      </div>
+      </scroll>
     </div>
-    <div class="search-result" v-show="query">
+    <div class="search-result" v-show="query" ref="searchResult">
       <suggest
         :query="query"
         @listScroll="blurInput"
         @select="saveSearch"
+        ref="suggest"
       ></suggest>
     </div>
+    <confirm
+      ref="confirm"
+      text="是否清空所有搜索历史"
+      confirmBtbText="清空"
+      @confirm="clearSearchHistory"
+    />
     <router-view></router-view>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-import SearchBox from 'base/search-box/search-box';
 import { getHotkey } from 'api/search';
 import { ERR_OK } from 'api/config';
-import {mapActions} from 'vuex';
+import SearchBox from 'base/search-box/search-box';
 import Suggest from 'components/suggest/suggest';
+import SearchList from 'components/search-list/search-list';
+import Confirm from 'base/confirm/confirm';
+import Scroll from 'base/scroll/scroll';
+import { mapActions, mapGetters } from 'vuex';
+import { playListMixin } from 'common/js/mixin';
 
 export default {
+  mixins: [playListMixin],
   data() {
     return {
       hotkey: [],
       query: ''
     };
   },
+  computed: {
+    shortcutData() {
+      return this.hotkey.concat(this.searchHistory);
+    },
+    ...mapGetters([
+      'searchHistory'
+    ])
+  },
   created() {
     this._getHotKey();
   },
   methods: {
+    handlePlaylist(playlist) {
+      const bottom = playlist.length > 0 ? '60px' : '';
+      this.$refs.shortcutWrapper.style.bottom = bottom;
+      this.$refs.shortcut.refresh();
+      this.$refs.searchResult.style.bottom = bottom;
+      this.$refs.suggest.refresh();
+    },
     addQuery(query) {
       this.$refs.searchBox.setQuery(query);
     },
@@ -62,18 +105,35 @@ export default {
     saveSearch() {
       this.saveSearchHistory(this.query);
     },
+    showConfirm() {
+      this.$refs.confirm.show();
+    },
     _getHotKey() {
       getHotkey().then((res) => {
         this.hotkey = res.data.hotkey.slice(0, 10);
       });
     },
     ...mapActions([
-      'saveSearchHistory'
+      'saveSearchHistory',
+      'deleteSearchHistory',
+      'clearSearchHistory'
     ])
+  },
+  watch: {
+    query(val) {
+      if (!val) {
+        setTimeout(() => {
+          this.$refs.shortcut.refresh();
+        }, 20);
+      }
+    }
   },
   components: {
     SearchBox,
-    Suggest
+    Suggest,
+    SearchList,
+    Confirm,
+    Scroll
   }
 };
 </script>
