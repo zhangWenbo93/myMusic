@@ -125,6 +125,7 @@ export default {
       } else {
         this.insertSong(item);
       }
+      this.$emit('select'); // 不许在suggest中写保存歌曲历史的逻辑，suggest处理的仅仅是歌手或者当前选中歌曲的信息
     },
     _checkMore(data) {
       const song = data.song;

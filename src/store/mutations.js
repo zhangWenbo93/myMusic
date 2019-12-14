@@ -27,7 +27,11 @@ const mutations = {
   },
   [types.SET_TOP_LIST](state, topList) {
     state.topList = topList;
+  },
+  [types.SET_SEARCH_HISTORY](state, history) { // 修改 存值
+    state.searchHistory = history;
   }
+
 };
 
 export default mutations;

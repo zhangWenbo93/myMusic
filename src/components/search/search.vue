@@ -22,7 +22,11 @@
       </div>
     </div>
     <div class="search-result" v-show="query">
-      <suggest :query="query" @listScroll="blurInput"></suggest>
+      <suggest
+        :query="query"
+        @listScroll="blurInput"
+        @select="saveSearch"
+      ></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -32,6 +36,7 @@
 import SearchBox from 'base/search-box/search-box';
 import { getHotkey } from 'api/search';
 import { ERR_OK } from 'api/config';
+import {mapActions} from 'vuex';
 import Suggest from 'components/suggest/suggest';
 
 export default {
@@ -54,11 +59,17 @@ export default {
     blurInput() { // 接收来自子组件suggest的事件
       this.$refs.searchBox.blur(); // 调用子组件searchBox的事件
     },
+    saveSearch() {
+      this.saveSearchHistory(this.query);
+    },
     _getHotKey() {
       getHotkey().then((res) => {
         this.hotkey = res.data.hotkey.slice(0, 10);
       });
-    }
+    },
+    ...mapActions([
+      'saveSearchHistory'
+    ])
   },
   components: {
     SearchBox,

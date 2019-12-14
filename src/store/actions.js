@@ -2,6 +2,7 @@
 import * as types from './mutation-types'; // 按 es6 的规范 import * as obj from "xxx" 会将 "xxx" 中所有 export 导出的内容组合成一个对象返回
 import { playMode } from 'common/js/config';
 import { shuffle } from 'common/js/util';
+import { saveSearch } from 'common/js/cache';
 
 function findIndex(list, song) {
   return list.findIndex((item) => {
@@ -71,4 +72,8 @@ export const insertSong = function ({ commit, state }, song) { // 搜索列表�
   commit(types.SET_CURRENT_INDEX, currentIndex);
   commit(types.SET_FULL_SCREEN, true);
   commit(types.SET_PLAYING_STATE, true);
+};
+
+export const saveSearchHistory = function ({ commit }, query) {
+  commit(types.SET_SEARCH_HISTORY, saveSearch(query));
 };
