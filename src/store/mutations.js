@@ -30,8 +30,10 @@ const mutations = {
   },
   [types.SET_SEARCH_HISTORY](state, history) { // 修改 存值
     state.searchHistory = history;
+  },
+  [types.SET_PLAY_HISTORY](state, history) { // 修改 存值
+    state.playHistory = history;
   }
-
 };
 
 export default mutations;

@@ -5,7 +5,12 @@
       <search-box ref="searchBox" @query="onQueryChange"></search-box>
     </div>
     <div class="shortcut-wrapper" v-show="!query" ref="shortcutWrapper">
-      <scroll class="shortcut" :data="shortcutData" ref="shortcut">
+      <scroll
+        class="shortcut"
+        :data="shortcutData"
+        ref="shortcut"
+        :refreshDelay="refreshDelay"
+      >
         <div>
           <div class="hot-key">
             <h1 class="title">热门搜索</h1>
@@ -60,27 +65,23 @@ import { getHotkey } from 'api/search';
 import { ERR_OK } from 'api/config';
 import SearchBox from 'base/search-box/search-box';
 import Suggest from 'components/suggest/suggest';
-import SearchList from 'components/search-list/search-list';
+import SearchList from 'base/search-list/search-list';
 import Confirm from 'base/confirm/confirm';
 import Scroll from 'base/scroll/scroll';
-import { mapActions, mapGetters } from 'vuex';
-import { playListMixin } from 'common/js/mixin';
+import { mapActions } from 'vuex';
+import { playListMixin, searchMixin } from 'common/js/mixin';
 
 export default {
-  mixins: [playListMixin],
+  mixins: [playListMixin, searchMixin],
   data() {
     return {
-      hotkey: [],
-      query: ''
+      hotkey: []
     };
   },
   computed: {
     shortcutData() {
       return this.hotkey.concat(this.searchHistory);
-    },
-    ...mapGetters([
-      'searchHistory'
-    ])
+    }
   },
   created() {
     this._getHotKey();
@@ -93,18 +94,6 @@ export default {
       this.$refs.searchResult.style.bottom = bottom;
       this.$refs.suggest.refresh();
     },
-    addQuery(query) {
-      this.$refs.searchBox.setQuery(query);
-    },
-    onQueryChange(query) {
-      this.query = query;
-    },
-    blurInput() { // 接收来自子组件suggest的事件
-      this.$refs.searchBox.blur(); // 调用子组件searchBox的事件
-    },
-    saveSearch() {
-      this.saveSearchHistory(this.query);
-    },
     showConfirm() {
       this.$refs.confirm.show();
     },
@@ -114,8 +103,6 @@ export default {
       });
     },
     ...mapActions([
-      'saveSearchHistory',
-      'deleteSearchHistory',
       'clearSearchHistory'
     ])
   },

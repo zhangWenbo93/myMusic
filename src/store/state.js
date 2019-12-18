@@ -1,6 +1,6 @@
 // 所有的状态管理
 import { playMode } from 'common/js/config';
-import { loadSearch } from 'common/js/cache';
+import { loadSearch, loadPlay } from 'common/js/cache';
 
 const state = {
   singer: {}, // 歌手页
@@ -12,7 +12,8 @@ const state = {
   currentIndex: -1, // 当前播放歌曲索引
   disc: {},
   topList: {},
-  searchHistory: loadSearch()
+  searchHistory: loadSearch(),
+  playHistory: loadPlay() // 默认从缓存获取
 };
 
 export default state;

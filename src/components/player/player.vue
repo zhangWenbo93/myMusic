@@ -140,7 +140,7 @@
 <script type="text/ecmascript-6">
 import animations from 'create-keyframe-animation';
 import Lyric from 'lyric-parser';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import Scroll from 'base/scroll/scroll';
 import ProgressBar from 'base/progress-bar/progress-bar';
 import ProgressCircle from 'base/progress-circle/progress-circle';
@@ -259,6 +259,7 @@ export default {
     },
     ready() { // 阻止快速点击下一首导致的audio报错
       this.songReady = true;
+      this.savePlayHistory(this.currentSong);
     },
     paused() {
       this.setPlayingState(false);
@@ -428,7 +429,10 @@ export default {
     },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN'
-    })
+    }),
+    ...mapActions([
+      'savePlayHistory'
+    ])
   },
   watch: {
     currentSong(newSong, oldSong) {

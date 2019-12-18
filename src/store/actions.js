@@ -2,7 +2,7 @@
 import * as types from './mutation-types'; // 按 es6 的规范 import * as obj from "xxx" 会将 "xxx" 中所有 export 导出的内容组合成一个对象返回
 import { playMode } from 'common/js/config';
 import { shuffle } from 'common/js/util';
-import { saveSearch, deleteSearch, clearSearch } from 'common/js/cache';
+import { saveSearch, deleteSearch, clearSearch, savePlay } from 'common/js/cache';
 
 function findIndex(list, song) {
   return list.findIndex((item) => {
@@ -36,7 +36,7 @@ export const randomPlay = function ({ commit }, { list }) { // 歌曲列表页�
   commit(types.SET_PLAYING_STATE, true);
 };
 
-export const insertSong = function ({ commit, state }, song) { // 搜索列表音乐跳转
+export const insertSong = function ({ commit, state }, song) { // 列表音乐点击插入列表
   let playlist = state.playlist.length > 0 ? state.playlist.slice() : [];
   let sequenceList = state.sequenceList.length > 0 ? state.sequenceList.slice() : [];
   let currentIndex = state.currentIndex;
@@ -110,4 +110,8 @@ export const deleteSongList = function ({ commit }) { // 整个删除历史
   commit(types.SET_SEQUENCE_LIST, []);
   commit(types.SET_CURRENT_INDEX, -1);
   commit(types.SET_PLAYING_STATE, false);
+};
+
+export const savePlayHistory = function ({ commit }, song) {
+  commit(types.SET_PLAY_HISTORY, savePlay(song));
 };

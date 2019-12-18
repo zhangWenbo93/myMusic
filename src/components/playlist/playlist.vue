@@ -12,7 +12,12 @@
             </span>
           </h1>
         </div>
-        <scroll ref="listContent" class="list-content" :data="sequenceList">
+        <scroll
+          ref="listContent"
+          class="list-content"
+          :data="sequenceList"
+          :refreshDelay="refreshDelay"
+        >
           <transition-group name="list" tag="ul">
             <li
               class="item"
@@ -33,7 +38,7 @@
           </transition-group>
         </scroll>
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click="addSong">
             <i class="icon-add" />
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -48,6 +53,7 @@
         confirm-text="清空"
         @confirm="confirmClear"
       />
+      <add-song ref="addSong" />
     </div>
   </transition>
 </template>
@@ -58,13 +64,15 @@ import { playMode } from 'common/js/config';
 import { playerMixin } from 'common/js/mixin';
 import Scroll from 'base/scroll/scroll';
 import Confirm from 'base/confirm/confirm';
+import AddSong from 'components/add-song/add-song';
 
 export default {
   mixins: [playerMixin],
   data() {
     return {
       showFlag: false,
-      nowIdx: ''
+      nowIdx: '',
+      refreshDelay: 100
     };
   },
   computed: {
@@ -78,7 +86,7 @@ export default {
       setTimeout(() => { // 切换的时候数据不是立马渲染的，而是经过计算渲染，所以需要延迟初始化下
         this.$refs.listContent.refresh();
         this.scrollToCurrent(this.currentSong);
-      }, 20);
+      }, 100);
     },
     hide() {
       this.showFlag = false;
@@ -118,6 +126,9 @@ export default {
       this.deleteSongList();
       this.hide();
     },
+    addSong() {
+      this.$refs.addSong.show();
+    },
     ...mapActions([
       'deleteSong',
       'deleteSongList'
@@ -132,12 +143,13 @@ export default {
       setTimeout(() => {
         this.setPlayingState(true); // watch当前currentSong的发生变化了就SET_PLAYING_STATE为true，否则不做改变。这样在deleteSong时，删除其他歌曲，当前的歌曲不会被改变播放状态
         this.scrollToCurrent(newSong);
-      }, 20);
+      }, this.refreshDelay); // 延迟时间不能太短 否则置顶失效,因为srcoll组件的数据更新有一个缓动过程，时间太短会导致refresh失败
     }
   },
   components: {
     Scroll,
-    Confirm
+    Confirm,
+    AddSong
   }
 };
 </script>
