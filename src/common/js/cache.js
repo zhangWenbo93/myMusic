@@ -4,6 +4,8 @@ const SEARCH_KEY = '__search__';
 const SEARCH_MAX_LENGTH = 15;
 const PLAY_KEY = '__play__';
 const PLAY_MAX_LENGTH = 200;
+const FAVORITE_KEY = '__favorite__';
+const FAVORITE_MAX_LENGTH = 200;
 /**
  *
  *
@@ -34,7 +36,7 @@ function deleteFromArray(arr, compare) {
   }
 }
 
-// 操作处理localStorage的逻辑
+// 操作处理Search localStorage的逻辑,纯数组
 export function saveSearch(query) {
   let searches = storage.get(SEARCH_KEY, []);
   insertArray(searches, query, (item) => {
@@ -73,4 +75,28 @@ export function savePlay(song) { // 添加歌曲到列表模块的歌曲同样�
 
 export function loadPlay() { // 读取添加歌曲到列表
   return storage.get(PLAY_KEY, []);
+}
+
+// 处理用户中心最爱歌曲列表
+
+export function saveFavorite(song) {
+  let songs = storage.get(FAVORITE_KEY, []);
+  insertArray(songs, song, (item) => {
+    return song.id === item.id;
+  }, FAVORITE_MAX_LENGTH);
+  storage.set(FAVORITE_KEY, songs);
+  return songs;
+}
+
+export function deleteFavorite(song) {
+  let songs = storage.get(FAVORITE_KEY, []);
+  deleteFromArray(songs, (item) => {
+    return item.id === song.id;
+  }, FAVORITE_MAX_LENGTH);
+  storage.set(FAVORITE_KEY, songs);
+  return songs;
+}
+
+export function loadFavorite() {
+  return storage.get(FAVORITE_KEY, []);
 }

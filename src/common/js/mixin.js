@@ -35,8 +35,12 @@ export const playerMixin = {
       'sequenceList',
       'currentSong',
       'playlist',
-      'mode'
-    ])
+      'mode',
+      'favoriteList'
+    ]),
+    favoriteIcon() {
+      return this.getFavoriteIcon(this.currentSong);
+    }
   },
   methods: {
     changeMode() { // 切换播放模式
@@ -57,12 +61,28 @@ export const playerMixin = {
       });
       this.setCurrentIndex(index);
     },
+    getFavoriteIcon(song) {
+      return this.isFavorite(song) ? 'icon-favorite' : 'icon-not-favorite';
+    },
+    toggoleFavorite(song) {
+      this.isFavorite(song) ? this.deleteFavoriteList(song) : this.saveFavoriteList(song);
+    },
+    isFavorite(song) {
+      const index = this.favoriteList.findIndex((item) => {
+        return item.id === song.id;
+      });
+      return index > -1;
+    },
     ...mapMutations({
       setPlayingState: 'SET_PLAYING_STATE',
       setCurrentIndex: 'SET_CURRENT_INDEX',
       setPlayMode: 'SET_PLAY_MODE',
       setPlaylist: 'SET_PLAYLIST'
-    })
+    }),
+    ...mapActions([
+      'saveFavoriteList',
+      'deleteFavoriteList'
+    ])
   }
 };
 

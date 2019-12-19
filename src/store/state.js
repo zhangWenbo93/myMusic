@@ -1,6 +1,6 @@
 // 所有的状态管理
 import { playMode } from 'common/js/config';
-import { loadSearch, loadPlay } from 'common/js/cache';
+import { loadSearch, loadPlay, loadFavorite } from 'common/js/cache';
 
 const state = {
   singer: {}, // 歌手页
@@ -13,7 +13,8 @@ const state = {
   disc: {},
   topList: {},
   searchHistory: loadSearch(),
-  playHistory: loadPlay() // 默认从缓存获取
+  playHistory: loadPlay(), // 默认从缓存获取
+  favoriteList: loadFavorite()
 };
 
 export default state;
