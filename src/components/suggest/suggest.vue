@@ -138,12 +138,12 @@ export default {
       if (data.zhida && data.zhida.singerid) {
         ret.push({ ...data.zhida, ...{ type: TYPE_SINGER } });
       }
-      return processSongsUrl(this._normalizSongs(data.song.list)).then((songs) => {
+      return processSongsUrl(this._normalizeSongs(data.song.list)).then((songs) => {
         ret = ret.concat(songs);
         return ret;
       });
     },
-    _normalizSongs(list) {
+    _normalizeSongs(list) {
       let ret = [];
       list.forEach(musicData => {
         if (isValidMusic(musicData)) {

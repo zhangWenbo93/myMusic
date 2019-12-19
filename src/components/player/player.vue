@@ -132,7 +132,7 @@
     <audio
       :src="currentSong.url"
       ref="audio"
-      @canplay="ready"
+      @play="ready"
       @error="error"
       @timeupdate="updateTime"
       @ended="end"
@@ -231,6 +231,7 @@ export default {
       }
       if (this.playlist.length === 1) { // 列表歌曲只有1首
         this.loop();
+        return;
       } else {
         let index = this.currentIndex - 1;
         if (index === -1) {
@@ -249,6 +250,7 @@ export default {
       }
       if (this.playlist.length === 1) { // 列表歌曲只有1首
         this.loop();
+        return;
       } else {
         let index = this.currentIndex + 1;
         if (index === this.playlist.length) {
@@ -295,6 +297,9 @@ export default {
     },
     getLyric() {
       this.currentSong.getLyric().then((lyric) => {
+        if (this.currentSong.lyric !== lyric) { // 如果当前播放歌曲歌词和获取的歌词不符，不作处理
+          return;
+        }
         this.currentLyric = new Lyric((lyric), this.handleLyric);
         if (this.playing) {
           this.currentLyric.play();
@@ -448,10 +453,14 @@ export default {
       }
       if (this.currentLyric) {
         this.currentLyric.stop();
+        this.currentTime = 0;
+        this.playingLyric = '';
+        this.currentLineNum = 0;
       }
-      setTimeout(() => {
-        this.$refs.audio.play();
-        this.getLyric();
+      clearTimeout(this.timer); // 每次快速切换时清除timer,保证每次都是最后一次切换
+      this.timer = setTimeout(() => { // 设置切换歌曲时延迟时间为timer
+        this.$refs.audio.play(); // 同步操作
+        this.getLyric(); // 异步操作，可能导致歌词不同步
       }, 1000);
       // this.$nextTick(() => {
       //   this.$refs.audio.play();

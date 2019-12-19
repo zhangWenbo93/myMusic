@@ -13,8 +13,8 @@ const state = {
   disc: {},
   topList: {},
   searchHistory: loadSearch(),
-  playHistory: loadPlay(), // 默认从缓存获取
-  favoriteList: loadFavorite()
+  playHistory: [],
+  favoriteList: []
 };
 
 export default state;
