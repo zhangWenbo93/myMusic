@@ -82,7 +82,6 @@ export default {
     _getDiscList () {
       getDiscList().then((res) => { // 列表页数据
         if (res.code === ERR_OK) {
-          console.log('res', res);
           this.discList = res.data.list;
         }
       });
